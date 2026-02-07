@@ -42,7 +42,7 @@ def initialize():
 
     # Load trained model
     classifier = IntentClassifier()
-    if os.path.exists(os.path.join(model_dir, 'classifier.pkl')):
+    if os.path.exists(os.path.join(model_dir, 'model.pkl')):
         classifier.load(model_dir)
         print("Loaded trained NLP model.")
     else:

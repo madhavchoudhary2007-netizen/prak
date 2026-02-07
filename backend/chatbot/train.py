@@ -3,9 +3,11 @@ Training Script for the Ethnobotanical Chatbot NLP Model
 
 This script:
 1. Loads training data (intents.json) and plant data (plants.json)
-2. Trains the TF-IDF + SVM intent classifier
+2. Trains the TF-IDF + Cosine Similarity intent classifier
 3. Evaluates model performance
 4. Saves trained model artifacts to disk
+
+No external ML libraries required - uses pure Python implementation.
 """
 
 import json
@@ -44,26 +46,14 @@ def train_model():
     print(f"  Loaded {len(plants_data)} plants")
 
     # Train intent classifier
-    print("\n[3/4] Training Intent Classifier (TF-IDF + SVM)...")
+    print("\n[3/4] Training Intent Classifier (TF-IDF + Cosine Similarity k-NN)...")
     classifier = IntentClassifier()
     metrics = classifier.train(intents_data)
 
     print(f"\n  Training Results:")
-    print(f"  ├── Training Accuracy:  {metrics['train_accuracy'] * 100:.1f}%")
-    print(f"  ├── Test Accuracy:      {metrics['test_accuracy'] * 100:.1f}%")
-    print(f"  ├── Number of Intents:  {metrics['num_intents']}")
-    print(f"  └── Training Samples:   {metrics['num_training_samples']} (after augmentation)")
-
-    # Print per-intent performance
-    print("\n  Per-Intent Performance (Test Set):")
-    report = metrics['classification_report']
-    for intent_name, scores in report.items():
-        if isinstance(scores, dict) and 'precision' in scores:
-            p = scores['precision']
-            r = scores['recall']
-            f1 = scores['f1-score']
-            if scores.get('support', 0) > 0:
-                print(f"    {intent_name:30s} P:{p:.2f}  R:{r:.2f}  F1:{f1:.2f}")
+    print(f"  +-- Accuracy:           {metrics['train_accuracy'] * 100:.1f}%")
+    print(f"  +-- Number of Intents:  {metrics['num_intents']}")
+    print(f"  +-- Training Samples:   {metrics['num_training_samples']} (after augmentation)")
 
     # Save model
     print(f"\n[4/4] Saving trained model to {model_dir}...")
@@ -90,7 +80,7 @@ def train_model():
     for query in test_queries:
         tag, conf = classifier.predict(query)
         print(f"  '{query}'")
-        print(f"    → Intent: {tag} (confidence: {conf:.2%})")
+        print(f"    -> Intent: {tag} (confidence: {conf:.2%})")
 
     # Test entity extraction
     print("\n" + "=" * 60)
@@ -108,8 +98,8 @@ def train_model():
     for query in entity_tests:
         entities = entity_extractor.extract_all(query)
         print(f"  '{query}'")
-        print(f"    → Plants: {entities['plants']}")
-        print(f"    → Ailments: {entities['ailments']}")
+        print(f"    -> Plants: {entities['plants']}")
+        print(f"    -> Ailments: {entities['ailments']}")
 
     print("\n" + "=" * 60)
     print("TRAINING COMPLETE!")

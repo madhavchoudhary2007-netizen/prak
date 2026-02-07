@@ -1,0 +1,302 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "hello", "hi", "hey", "namaste", "good morning", "good evening",
+        "hi there", "hey there", "greetings", "howdy", "what's up",
+        "hello there", "namaskar", "pranam", "sup", "yo",
+        "good afternoon", "hola", "hi bot", "hello bot"
+      ],
+      "responses": [
+        "Namaste! I am Vaidya, your AI ethnobotany guide. How may I help you explore the rich world of Indian medicinal plants today?",
+        "Greetings! Welcome to Prakriti. Ask me about any Indian medicinal plant, traditional remedies, or bioelectric properties.",
+        "Namaste! I'm here to help you discover the ancient wisdom of Indian ethnobotany. What would you like to know?"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "bye", "goodbye", "see you", "see ya", "take care",
+        "farewell", "good night", "later", "bye bye", "cya",
+        "gotta go", "thanks bye", "thank you bye", "alvida"
+      ],
+      "responses": [
+        "Farewell! May the wisdom of ancient herbs guide your path. Come back anytime!",
+        "Goodbye! Remember, nature holds the answers to many of our questions. Visit again soon!",
+        "Take care! Keep exploring the wonderful world of Indian medicinal plants."
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "thanks", "thank you", "thanks a lot", "thank you so much",
+        "that's helpful", "much appreciated", "dhanyavaad", "shukriya",
+        "great thanks", "thanks for the info", "helpful"
+      ],
+      "responses": [
+        "You're welcome! Feel free to ask more about Indian medicinal plants anytime.",
+        "Happy to help! There's so much more to explore in ethnobotany. What else interests you?",
+        "Glad I could assist! The world of traditional plant medicine is vast - keep exploring!"
+      ]
+    },
+    {
+      "tag": "how_are_you",
+      "patterns": [
+        "how are you", "how do you do", "how's it going", "how are you doing",
+        "what's up with you", "you okay", "how ya doing", "are you well"
+      ],
+      "responses": [
+        "I'm energized by the wisdom of ancient herbs! What would you like to explore today?",
+        "Thriving like a Tulsi plant in the monsoon! How can I help you with ethnobotanical knowledge?",
+        "I'm doing great, rooted in knowledge like a Banyan tree! What can I help you discover?"
+      ]
+    },
+    {
+      "tag": "plant_info",
+      "patterns": [
+        "tell me about", "what is", "information about", "describe",
+        "give me details about", "explain about", "what do you know about",
+        "show me", "I want to know about", "details of", "info on",
+        "what can you tell me about", "everything about", "teach me about",
+        "knowledge about", "facts about", "profile of", "characteristics of",
+        "properties of", "learn about"
+      ],
+      "responses": ["__plant_info__"]
+    },
+    {
+      "tag": "scientific_name",
+      "patterns": [
+        "scientific name of", "botanical name of", "latin name of",
+        "what is the scientific name", "what's the botanical name",
+        "binomial name of", "species name of", "taxonomy of",
+        "what is it called scientifically", "formal name of"
+      ],
+      "responses": ["__scientific_name__"]
+    },
+    {
+      "tag": "medicinal_uses",
+      "patterns": [
+        "medicinal uses of", "what are the uses of", "health benefits of",
+        "healing properties of", "therapeutic uses of", "how is it used medicinally",
+        "what does it cure", "what does it treat", "medical benefits of",
+        "what is it used for", "remedies using", "treatments with",
+        "what ailments does it treat", "curative properties of",
+        "how is it used in medicine", "what are the benefits"
+      ],
+      "responses": ["__medicinal_uses__"]
+    },
+    {
+      "tag": "ethnobotanical_context",
+      "patterns": [
+        "traditional use of", "cultural significance of", "folk use of",
+        "tribal use of", "how was it used traditionally", "history of",
+        "ethnobotanical context of", "cultural importance of",
+        "which communities use", "traditional knowledge about",
+        "indigenous use of", "how do tribes use", "folk medicine use of",
+        "ancient use of", "ayurvedic significance of", "heritage of"
+      ],
+      "responses": ["__ethnobotanical__"]
+    },
+    {
+      "tag": "bioelectric_info",
+      "patterns": [
+        "bioelectric properties of", "nervine properties of",
+        "how does it affect the nervous system", "neural effects of",
+        "bioelectric mechanism of", "how does it work on nerves",
+        "electrical properties of", "neuroactive properties of",
+        "how does it affect neurons", "bio-impulsive properties of",
+        "nerve-related effects of", "neurological effects of"
+      ],
+      "responses": ["__bioelectric_info__"]
+    },
+    {
+      "tag": "ailment_query",
+      "patterns": [
+        "plants for", "which plant helps with", "what helps with",
+        "remedy for", "treatment for", "herbs for", "cure for",
+        "which plant treats", "plant for treating", "natural remedy for",
+        "what should I use for", "suggest a plant for",
+        "recommend a plant for", "best plant for", "traditional remedy for",
+        "herbs that help with", "plants that treat", "what is good for",
+        "what plant can help me with", "natural treatment for"
+      ],
+      "responses": ["__ailment_query__"]
+    },
+    {
+      "tag": "stress_ailment",
+      "patterns": [
+        "stress", "anxiety", "tension", "worry", "nervous",
+        "stressed out", "anxious", "panic", "calm down", "relaxation",
+        "plants for stress", "herbs for anxiety", "help with tension",
+        "calming herbs", "anti-anxiety plants", "stress relief",
+        "reduce anxiety", "manage stress", "deal with worry",
+        "I am stressed", "I feel anxious", "relieve stress"
+      ],
+      "responses": ["__stress_ailment__"]
+    },
+    {
+      "tag": "memory_ailment",
+      "patterns": [
+        "memory", "cognitive", "brain", "concentration", "focus",
+        "mental clarity", "intelligence", "learning", "brain power",
+        "improve memory", "boost brain", "enhance cognition",
+        "better concentration", "sharpen mind", "brain health",
+        "cognitive function", "mental performance", "forgetfulness",
+        "brain fog", "plants for memory", "herbs for brain"
+      ],
+      "responses": ["__memory_ailment__"]
+    },
+    {
+      "tag": "respiratory_ailment",
+      "patterns": [
+        "cough", "cold", "respiratory", "breathing", "lungs",
+        "asthma", "bronchitis", "flu", "fever", "sore throat",
+        "congestion", "phlegm", "sinusitis", "nasal",
+        "plants for cough", "herbs for cold", "respiratory health",
+        "breathing problems", "lung health", "chest congestion"
+      ],
+      "responses": ["__respiratory_ailment__"]
+    },
+    {
+      "tag": "digestion_ailment",
+      "patterns": [
+        "digestion", "stomach", "digestive", "gastric", "acidity",
+        "nausea", "bloating", "constipation", "indigestion",
+        "gut health", "appetite", "metabolism", "acid reflux",
+        "plants for digestion", "herbs for stomach", "digestive health",
+        "stomach problems", "gastric issues", "improve digestion"
+      ],
+      "responses": ["__digestion_ailment__"]
+    },
+    {
+      "tag": "immunity_ailment",
+      "patterns": [
+        "immunity", "immune system", "infection", "defense",
+        "immune boost", "resistance", "strengthen immunity",
+        "plants for immunity", "herbs for immune system",
+        "boost immune system", "fight infection", "immune health",
+        "prevent disease", "stay healthy", "immune support"
+      ],
+      "responses": ["__immunity_ailment__"]
+    },
+    {
+      "tag": "skin_ailment",
+      "patterns": [
+        "skin", "acne", "rash", "eczema", "dermatitis",
+        "skin health", "complexion", "beauty", "skin care",
+        "plants for skin", "herbs for skin", "skin problems",
+        "skin infection", "glowing skin", "clear skin",
+        "skin irritation", "skin disease", "wound healing"
+      ],
+      "responses": ["__skin_ailment__"]
+    },
+    {
+      "tag": "inflammation_ailment",
+      "patterns": [
+        "inflammation", "swelling", "joint pain", "arthritis",
+        "anti-inflammatory", "pain relief", "chronic pain",
+        "reduce inflammation", "plants for inflammation",
+        "herbs for joint pain", "inflammatory condition",
+        "muscle pain", "body ache", "soreness"
+      ],
+      "responses": ["__inflammation_ailment__"]
+    },
+    {
+      "tag": "sleep_ailment",
+      "patterns": [
+        "sleep", "insomnia", "sleeplessness", "can't sleep",
+        "trouble sleeping", "sleep disorder", "rest",
+        "plants for sleep", "herbs for insomnia", "sleep aid",
+        "improve sleep", "better sleep", "sedative herbs",
+        "sleep quality", "relaxation for sleep"
+      ],
+      "responses": ["__sleep_ailment__"]
+    },
+    {
+      "tag": "nervine_query",
+      "patterns": [
+        "nervine tonics", "nervine plants", "what are nervine",
+        "list nervine tonics", "nervine herbs", "nerve tonic plants",
+        "plants for nervous system", "herbs for nerves",
+        "nervous system support", "nerve health plants",
+        "what is a nervine tonic", "explain nervine"
+      ],
+      "responses": ["__nervine_query__"]
+    },
+    {
+      "tag": "bioelectric_general",
+      "patterns": [
+        "bioelectric", "bioelectronics", "bio-impulsive",
+        "what is bioelectric", "explain bioelectronics",
+        "bioelectric medicine", "electrical signals in plants",
+        "plant electricity", "neural signals", "ion channels",
+        "action potentials", "bioelectric healing",
+        "how do plants affect electrical signals",
+        "connection between plants and bioelectronics"
+      ],
+      "responses": [
+        "Bioelectric properties refer to how plant compounds influence the electrical signaling in our bodies, particularly the nervous system. Many Indian medicinal plants modulate ion channels, action potentials, and neurotransmitter activity. This is the bridge between ancient healing wisdom and modern bioelectronics engineering. Would you like to know about specific plants with notable bioelectric properties?",
+        "In the context of ethnobotany, bioelectric properties describe how plant-derived compounds interact with the body's electrical signaling systems. Plants like Brahmi, Ashwagandha, Jatamansi, and Shankhpushpi have compounds that modulate neural bioelectric activity through ion channel regulation, synaptic plasticity, and neurotransmitter modulation. This connects traditional descriptions like 'calming the nerves' to measurable bioelectric phenomena."
+      ]
+    },
+    {
+      "tag": "disclaimer",
+      "patterns": [
+        "disclaimer", "medical advice", "is this medical advice",
+        "can I use this for treatment", "should I take this",
+        "is this safe", "can I trust this information",
+        "are these cures proven", "is this verified",
+        "should I see a doctor", "replace my medicine"
+      ],
+      "responses": [
+        "IMPORTANT DISCLAIMER: This is strictly an educational and informational tool. The information provided is NOT medical advice, diagnosis, or treatment. Traditional knowledge is presented for academic purposes only. Always consult qualified healthcare practitioners before using any plant-based remedies. Never replace prescribed medication without medical guidance.",
+        "Please note: Prakriti is an educational platform celebrating ethnobotanical knowledge. It does not provide medical advice or treatment recommendations. All information is for learning purposes only. Please consult a qualified healthcare professional for any health concerns."
+      ]
+    },
+    {
+      "tag": "about_project",
+      "patterns": [
+        "what is this project", "about prakriti", "who made this",
+        "what is prakriti", "about this app", "what does this do",
+        "tell me about this project", "what is the purpose",
+        "why was this made", "project information"
+      ],
+      "responses": [
+        "Prakriti is an AI-powered Ethnobotanical Knowledge System for Indian Flora. It preserves and makes accessible traditional Indian ethnobotanical knowledge through an interactive chatbot. The project bridges ancient healing wisdom with modern bioelectronics by connecting traditional plant descriptions with their effects on the body's electrical signaling systems. It was built as a multidisciplinary project combining Computer Science, Biosciences, and Electronics Engineering.",
+        "This is Prakriti - a student-built platform that uses AI and Natural Language Processing to make India's rich ethnobotanical heritage accessible to everyone. It features a curated database of Indian medicinal plants with traditional uses, medicinal applications, and bioelectric properties, all accessible through me, Vaidya, your AI botanist guide."
+      ]
+    },
+    {
+      "tag": "list_plants",
+      "patterns": [
+        "list all plants", "show all plants", "how many plants",
+        "what plants do you have", "which plants are in the database",
+        "all available plants", "plant list", "show me all plants",
+        "what plants do you know about", "complete plant list"
+      ],
+      "responses": ["__list_plants__"]
+    },
+    {
+      "tag": "compare_plants",
+      "patterns": [
+        "compare", "difference between", "which is better",
+        "versus", "vs", "similarities between", "how do they differ",
+        "compare plants", "which one should I choose"
+      ],
+      "responses": ["__compare_plants__"]
+    },
+    {
+      "tag": "help",
+      "patterns": [
+        "help", "what can you do", "how to use", "capabilities",
+        "what do you know", "guide me", "instructions",
+        "how does this work", "what can I ask", "menu",
+        "options", "features", "commands"
+      ],
+      "responses": [
+        "I can help you with:\n\n1. **Plant Information** - Ask about any plant (e.g., 'Tell me about Ashwagandha')\n2. **Ailment Queries** - Find plants for specific conditions (e.g., 'Plants for stress')\n3. **Scientific Names** - Get botanical nomenclature (e.g., 'Scientific name of Tulsi')\n4. **Medicinal Uses** - Learn healing properties (e.g., 'Uses of Turmeric')\n5. **Bioelectric Properties** - Explore nervine and bioelectric effects (e.g., 'Bioelectric properties of Brahmi')\n6. **Traditional Context** - Discover cultural significance (e.g., 'Traditional use of Neem')\n7. **Nervine Tonics** - Learn about plants that support the nervous system\n8. **Plant Comparison** - Compare two plants\n\nJust type your question naturally!"
+      ]
+    }
+  ]
+}

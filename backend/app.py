@@ -6,18 +6,22 @@ Endpoints:
 - GET  /api/plants   - Get all plants
 - GET  /api/plant/<name> - Get specific plant info
 - GET  /api/health   - Health check
+- GET  /*            - Serves React frontend (production)
 """
 
 import json
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
 from chatbot.model import IntentClassifier, EntityExtractor
 from chatbot.engine import ChatbotEngine
 
-app = Flask(__name__)
-CORS(app)  # Enable CORS for React frontend
+base_dir = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(base_dir, 'static')
+
+app = Flask(__name__, static_folder=static_dir, static_url_path='')
+CORS(app)
 
 # Global references
 chatbot_engine = None
@@ -28,7 +32,6 @@ def initialize():
     """Load model and data on startup."""
     global chatbot_engine, plants_data
 
-    base_dir = os.path.dirname(os.path.abspath(__file__))
     data_dir = os.path.join(base_dir, 'data')
     model_dir = os.path.join(base_dir, 'trained_model')
 
@@ -58,6 +61,8 @@ def initialize():
     chatbot_engine = ChatbotEngine(classifier, entity_extractor, plants_data, intents_data)
     print(f"Chatbot engine initialized with {len(plants_data)} plants.")
 
+
+# --- API Routes ---
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -117,8 +122,20 @@ def get_plant(name):
     return jsonify({'error': f'Plant "{name}" not found'}), 404
 
 
+# --- Serve React Frontend (production) ---
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_frontend(path):
+    """Serve React build files. Falls back to index.html for client-side routing."""
+    if path and os.path.exists(os.path.join(static_dir, path)):
+        return send_from_directory(static_dir, path)
+    return send_from_directory(static_dir, 'index.html')
+
+
 # Initialize on module load
 initialize()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)

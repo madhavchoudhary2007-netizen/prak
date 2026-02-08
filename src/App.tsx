@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, Search, X, Send, BookOpen, Users, Zap } from 'lucide-react';
+import { Leaf, Search, X, Send, BookOpen, Users, Zap, Bot, Brain } from 'lucide-react';
 
 interface Plant {
   id: number;
@@ -160,16 +160,15 @@ const ailmentLabels: Record<string, string> = {
   "inflammation": "Anti-Inflammatory"
 };
 
-const nervinePlants = [3,7,8,9]; // Ashwagandha, Brahmi, Shankhpushpi, Jatamansi
-
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [messages, setMessages] = useState<{ role: 'user' | 'bot'; content: string }[]>([
-    { role: 'bot', content: "Namaste! I am Vaidya, your AI ethnobotany guide. Ask me about Indian medicinal plants, their traditional uses, or their fascinating bioelectric properties. For example: 'Tell me about Ashwagandha' or 'Which plants help with stress?'" }
+  const [messages, setMessages] = useState<{ role: 'user' | 'bot'; content: string; meta?: { intent: string; confidence: number; entities: Record<string, string[]> } }[]>([
+    { role: 'bot', content: "Namaste! I am Vaidya, your AI-powered ethnobotany guide. I use Natural Language Processing to understand your questions about Indian medicinal plants, their traditional uses, bioelectric properties, and more.\n\nTry asking:\n- 'Tell me about Ashwagandha'\n- 'Which plants help with stress?'\n- 'What are nervine tonics?'\n- 'Bioelectric properties of Brahmi'" }
   ]);
+  const chatEndRef = useRef<HTMLDivElement>(null);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
@@ -184,87 +183,9 @@ function App() {
     return matchesSearch && matchesFilter;
   });
 
-  const getBotResponse = (query: string): string => {
-    const lowerQuery = query.toLowerCase().trim();
-    
-    // Direct plant name matches
-    const matchedPlant = plants.find(p => 
-      lowerQuery.includes(p.name.toLowerCase()) || 
-      lowerQuery.includes(p.sciName.toLowerCase().split(' ')[0])
-    );
-    
-    if (matchedPlant) {
-      return `**${matchedPlant.name} (${matchedPlant.sciName})**\n\n` +
-             `${matchedPlant.description}\n\n` +
-             `**Traditional Uses:** ${matchedPlant.medicinalUses.join(', ')}\n\n` +
-             `**Bioelectric Properties:** ${matchedPlant.bioelectric}\n\n` +
-             `**Ethnobotanical Context:** ${matchedPlant.ethnobotanical}\n\n` +
-             `Try asking: "Show me plants for stress" or "What are nervine tonics?"`;
-    }
-    
-    // Ailment-based suggestions
-    const ailmentMap: Record<string, number[]> = {
-      "stress": [3,7,8,9,1],
-      "anxiety": [3,7,8,9,1],
-      "memory": [7,8,9,3],
-      "cough": [1,5,12],
-      "cold": [1,5,12],
-      "respiratory": [1,5,12],
-      "digestion": [5,6,10,12],
-      "nausea": [5],
-      "skin": [2,4,6],
-      "immunity": [1,6,11],
-      "inflammation": [4,11],
-      "sleep": [8,9]
-    };
-    
-    let suggestedPlants: Plant[] = [];
-    
-    Object.keys(ailmentMap).forEach(key => {
-      if (lowerQuery.includes(key)) {
-        suggestedPlants = ailmentMap[key].map(id => 
-          plants.find(p => p.id === id)!
-        ).filter(Boolean);
-      }
-    });
-    
-    if (suggestedPlants.length > 0) {
-      return `For ${lowerQuery.includes('stress') || lowerQuery.includes('anxiety') ? 'stress and anxiety' : 
-               lowerQuery.includes('memory') ? 'cognitive support' : 
-               lowerQuery.includes('respiratory') || lowerQuery.includes('cough') ? 'respiratory health' : 
-               lowerQuery.includes('digestion') ? 'digestion' : 'your concern'}, traditional Indian ethnobotany recommends:\n\n` +
-             suggestedPlants.map((p, idx) => `${idx+1}. **${p.name}** - ${p.medicinalUses[0]}`).join('\n') + 
-             `\n\nAlways consult a healthcare professional before use. Would you like detailed information on any of these?`;
-    }
-    
-    // Bioelectric & Nervine queries
-    if (lowerQuery.includes("nervine") || lowerQuery.includes("bioelectric") || 
-        lowerQuery.includes("nerve") || lowerQuery.includes("electric") || 
-        lowerQuery.includes("impulse")) {
-      const nervines = plants.filter(p => nervinePlants.includes(p.id));
-      return `Nervine tonics in Indian ethnobotany are plants that support the nervous system by influencing bioelectric properties. Here are key examples:\n\n` +
-             nervines.map((p, idx) => `${idx+1}. **${p.name}**: ${p.bioelectric.split('. ')[0]}`).join('\n') +
-             `\n\nThese bridge ancient wisdom with modern bioelectronics by modulating ion channels and neural signaling.`;
-    }
-    
-    // General responses
-    if (lowerQuery.includes("hello") || lowerQuery.includes("namaste") || lowerQuery.includes("hi")) {
-      return "Namaste! How may I guide you through the rich world of Indian flora today?";
-    }
-    
-    if (lowerQuery.includes("how are you")) {
-      return "Energized by the wisdom of ancient herbs! What would you like to explore?";
-    }
-    
-    if (lowerQuery.includes("disclaimer") || lowerQuery.includes("medical")) {
-      return "IMPORTANT: This is an educational tool only. The information provided here is for informational purposes and is not intended as medical advice, diagnosis, or treatment. Always consult qualified healthcare practitioners.";
-    }
-    
-    // Default response
-    return "Interesting query! I can tell you about specific plants like Ashwagandha or Brahmi, suggest remedies for common ailments (e.g., 'plants for digestion'), or explain nervine and bioelectric properties. What would you like to know?";
-  };
+  const API_BASE = 'http://localhost:5000';
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (!inputMessage.trim()) return;
 
     const userMessage = inputMessage.trim();
@@ -272,13 +193,56 @@ function App() {
     setInputMessage("");
     setIsTyping(true);
 
-    // Simulate AI thinking
-    setTimeout(() => {
-      const botReply = getBotResponse(userMessage);
-      setMessages(prev => [...prev, { role: 'bot', content: botReply }]);
+    try {
+      const response = await fetch(`${API_BASE}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMessage }),
+      });
+
+      if (!response.ok) throw new Error('API request failed');
+
+      const data = await response.json();
+      setMessages(prev => [...prev, {
+        role: 'bot',
+        content: data.response,
+        meta: {
+          intent: data.intent,
+          confidence: data.confidence,
+          entities: data.entities,
+        }
+      }]);
+    } catch {
+      // Fallback to local rule-based response if backend is unavailable
+      const fallbackReply = getLocalFallbackResponse(userMessage);
+      setMessages(prev => [...prev, {
+        role: 'bot',
+        content: fallbackReply,
+        meta: { intent: 'fallback', confidence: 0, entities: {} }
+      }]);
+    } finally {
       setIsTyping(false);
-    }, 650);
+    }
   };
+
+  const getLocalFallbackResponse = (query: string): string => {
+    const lq = query.toLowerCase().trim();
+    const matchedPlant = plants.find(p =>
+      lq.includes(p.name.toLowerCase()) ||
+      lq.includes(p.sciName.toLowerCase().split(' ')[0])
+    );
+    if (matchedPlant) {
+      return `**${matchedPlant.name} (${matchedPlant.sciName})**\n\n${matchedPlant.description}\n\n**Traditional Uses:** ${matchedPlant.medicinalUses.join(', ')}\n\n**Bioelectric Properties:** ${matchedPlant.bioelectric}`;
+    }
+    if (lq.includes("hello") || lq.includes("namaste") || lq.includes("hi")) {
+      return "Namaste! I'm currently running in offline mode. Ask me about any Indian medicinal plant!";
+    }
+    return "I'm currently running in offline mode (backend unavailable). Please ensure the Python AI backend is running on port 5000. Try: `cd backend && python app.py`";
+  };
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isTyping]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -524,8 +488,8 @@ function App() {
             <p className="max-w-xs text-white/60">A student-built demonstration project celebrating Indian ethnobotany and the emerging field of bioelectric medicine.</p>
             
             <div className="mt-8 flex gap-8 text-xs text-white/50">
-              <div>BUILT WITH REACT + TAILWIND</div>
-              <div>DATA FROM TRADITIONAL SOURCES</div>
+              <div>REACT + TAILWIND + PYTHON NLP</div>
+              <div>AI-POWERED • TF-IDF + SVM CLASSIFIER</div>
             </div>
           </div>
 
@@ -620,11 +584,11 @@ function App() {
               <div className="px-8 py-6 flex items-center justify-between border-b border-white/10">
                 <div className="flex items-center gap-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E8B059]/50">
-                    <Leaf className="text-[#E8B059]" />
+                    <Bot className="text-[#E8B059]" />
                   </div>
                   <div>
-                    <div className="font-medium">Vaidya • AI Botanist</div>
-                    <div className="text-xs text-emerald-400 flex items-center gap-1.5">● ONLINE</div>
+                    <div className="font-medium">Vaidya • NLP-Powered</div>
+                    <div className="text-xs text-emerald-400 flex items-center gap-1.5">● AI ENGINE ACTIVE</div>
                   </div>
                 </div>
                 <button onClick={toggleChat} className="text-white/70 hover:text-white">
@@ -635,22 +599,34 @@ function App() {
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-8 space-y-8 text-[15px] custom-scroll">
                 {messages.map((msg, idx) => (
-                  <div 
-                    key={idx} 
+                  <div
+                    key={idx}
                     className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div 
-                      className={`max-w-[86%] px-6 py-4 rounded-3xl ${msg.role === 'user' 
-                        ? 'bg-[#E8B059] text-black' 
-                        : 'bg-white/5'}`}
-                    >
-                      {msg.content.split('\n').map((line, i) => (
-                        <div key={i}>{line}</div>
-                      ))}
+                    <div className={`max-w-[86%] ${msg.role === 'bot' ? '' : ''}`}>
+                      <div
+                        className={`px-6 py-4 rounded-3xl ${msg.role === 'user'
+                          ? 'bg-[#E8B059] text-black'
+                          : 'bg-white/5'}`}
+                      >
+                        {msg.content.split('\n').map((line, i) => (
+                          <div key={i} className={line.startsWith('**') ? 'font-semibold mt-2' : ''}>
+                            {line.replace(/\*\*/g, '').replace(/\*/g, '')}
+                          </div>
+                        ))}
+                      </div>
+                      {msg.role === 'bot' && msg.meta && msg.meta.intent !== 'fallback' && msg.meta.confidence > 0 && (
+                        <div className="flex items-center gap-2 mt-1.5 px-2">
+                          <Brain className="w-3 h-3 text-[#E8B059]/60" />
+                          <span className="text-[10px] text-white/30">
+                            NLP: {msg.meta.intent.replace(/_/g, ' ')} ({(msg.meta.confidence * 100).toFixed(0)}% confidence)
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
-                
+
                 {isTyping && (
                   <div className="flex justify-start">
                     <div className="bg-white/5 px-6 py-4 rounded-3xl flex items-center gap-2">
@@ -659,10 +635,11 @@ function App() {
                         <motion.div className="w-1 h-1 bg-white/60 rounded-full" animate={{ scale: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1.1, delay: 0.2 }} />
                         <motion.div className="w-1 h-1 bg-white/60 rounded-full" animate={{ scale: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1.1, delay: 0.4 }} />
                       </div>
-                      <span className="text-xs text-white/50 ml-2">Thinking...</span>
+                      <span className="text-xs text-white/50 ml-2">AI Processing...</span>
                     </div>
                   </div>
                 )}
+                <div ref={chatEndRef} />
               </div>
 
               {/* Input Area */}

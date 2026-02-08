@@ -183,7 +183,7 @@ function App() {
     return matchesSearch && matchesFilter;
   });
 
-  const API_BASE = 'http://localhost:5000';
+  const API_BASE = '';
 
   const sendMessage = async () => {
     if (!inputMessage.trim()) return;
